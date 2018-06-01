@@ -13,6 +13,10 @@ public class MP3Player{
 
 	private static Player playMP3;
 	private static FileInputStream fis;
+	private static MusicPlayer player;
+	private static Thread curPlay;
+
+	public static boolean isPause;
 
 	private static File musicFolder;
 	private static ArrayList<String> playList;
@@ -30,6 +34,34 @@ public class MP3Player{
 		loading();
 
 		buttonsPanelInit();
+
+		class PlayPauseListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				if(curPlay == null)
+					playNextMusic();
+				else{
+					// try{
+					// 	if(isPause == false){
+					// 		isPause = true;
+					// 	}
+					// 	else{
+					// 		isPause = false;
+					// 	}
+					// }catch(InterruptedException exce){
+					// 	exce.printStackTrace();
+					// }
+					//playPauseMusic();
+					if(player.isPause()){
+						player.resume();
+					}
+					else{
+						player.pause();
+					}
+				}
+			}
+		}
+		PlayPauseListener playPauseListener = new PlayPauseListener();
+		playPauseButton.addActionListener(playPauseListener);
 		
 		class PlayNextListener implements ActionListener{
 			public void actionPerformed(ActionEvent e){
@@ -47,6 +79,7 @@ public class MP3Player{
 		StopListener stopListener = new StopListener();
 		stopButton.addActionListener(stopListener);
 
+		buttonsPanel.add(playPauseButton);
 		buttonsPanel.add(playNextButton);
 		buttonsPanel.add(stopButton);
 
@@ -76,6 +109,8 @@ public class MP3Player{
 	public static void loading(){
 		playList = new ArrayList<String>();
 		index = 0;
+		isPause = false;
+
 		frame = new JFrame("MyMP3Player");
 		frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
@@ -89,6 +124,18 @@ public class MP3Player{
 		
 	}
 
+	public static void playPauseMusic(){
+		try{
+			stopMusic();
+			playMP3 = new Player(fis);
+			MusicPlayer player = new MusicPlayer(playMP3);
+			curPlay = new Thread(player);
+			curPlay.start();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 	public static void playNextMusic(){
 		try{
 			stopMusic();
@@ -96,8 +143,9 @@ public class MP3Player{
 			String musicPath = musicFolder.getName() + "/" + playList.get(index++);
 			fis = new FileInputStream(musicPath);
 			playMP3 = new Player(fis);
-			MusicPlayer player = new MusicPlayer(playMP3);
-			new Thread(player).start();
+			player = new MusicPlayer(playMP3);
+			curPlay = new Thread(player);
+			curPlay.start();
 
 			if(index >= playList.size()){
 				index = 0;
@@ -110,7 +158,9 @@ public class MP3Player{
 
 	public static void stopMusic(){
 		try{
+
 			if(playMP3 != null){
+				player.stop();
 				playMP3.close();
 				playMP3 = null;
 			}
