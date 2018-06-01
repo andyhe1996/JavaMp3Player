@@ -20,27 +20,24 @@ public class MP3Player{
 
 	private static JFrame frame;
 
+	private static JPanel buttonsPanel;
+	private static JButton playPauseButton;
+	private static JButton playNextButton;
+	private static JButton stopButton;
+
 	public static void main(String[] args){
 
 		loading();
-		JPanel buttonsPanel = new JPanel();
-		JButton playButton = new JButton("play");
-		JButton stopButton = new JButton("stop");
-		frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		buttonsPanel.setSize(DEFAULT_WIDTH - 200, DEFAULT_HEIGHT);
 
-		int buttonsizeX = 100;
-		int buttonsizeY = 50;
-		playButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
-		stopButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
-
-		class PlayListener implements ActionListener{
+		buttonsPanelInit();
+		
+		class PlayNextListener implements ActionListener{
 			public void actionPerformed(ActionEvent e){
-				playMusic();
+				playNextMusic();
 			}
 		}
-		PlayListener playListener = new PlayListener();
-		playButton.addActionListener(playListener);
+		PlayNextListener playNextListener = new PlayNextListener();
+		playNextButton.addActionListener(playNextListener);
 
 		class StopListener implements ActionListener{
 			public void actionPerformed(ActionEvent e){
@@ -50,7 +47,7 @@ public class MP3Player{
 		StopListener stopListener = new StopListener();
 		stopButton.addActionListener(stopListener);
 
-		buttonsPanel.add(playButton);
+		buttonsPanel.add(playNextButton);
 		buttonsPanel.add(stopButton);
 
 		frame.setLayout(new BorderLayout());
@@ -61,10 +58,26 @@ public class MP3Player{
 
 	}
 
+	public static void buttonsPanelInit(){
+		buttonsPanel = new JPanel();
+		playPauseButton = new JButton("play/pause");
+		playNextButton = new JButton("play next");
+		stopButton = new JButton("stop");
+		buttonsPanel.setSize(DEFAULT_WIDTH - 200, DEFAULT_HEIGHT);
+
+		int buttonsizeX = 100;
+		int buttonsizeY = 50;
+		playPauseButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
+		playNextButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
+		stopButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
+
+	}
+
 	public static void loading(){
 		playList = new ArrayList<String>();
 		index = 0;
 		frame = new JFrame("MyMP3Player");
+		frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
 		musicFolder = new File("Music");
 		for (File fileEntry : musicFolder.listFiles()) {
@@ -76,7 +89,7 @@ public class MP3Player{
 		
 	}
 
-	public static void playMusic(){
+	public static void playNextMusic(){
 		try{
 			stopMusic();
 

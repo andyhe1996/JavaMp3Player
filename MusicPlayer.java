@@ -16,7 +16,7 @@ public class MusicPlayer implements Runnable{
 			player.play();
 			if(player.isComplete()){
 				System.out.println("complete");
-				MP3Player.playMusic();
+				MP3Player.playNextMusic();
 			}
 		}
 		catch(Exception e){
