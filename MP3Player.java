@@ -18,7 +18,6 @@ public class MP3Player{
 
 	public static boolean isPause;
 
-
 	private static File musicFolder;
 	private static ArrayList<String> playList;
 	private static int index;
@@ -132,9 +131,9 @@ public class MP3Player{
 
 		buttonsPanel.setLayout(new BorderLayout());
 		buttonsPanel.add(playPreButton, BorderLayout.WEST);
-		buttonsPanel.add(playPauseButton, BorderLayout.CENTER);
+		buttonsPanel.add(playPauseButton, BorderLayout.SOUTH);
 		buttonsPanel.add(playNextButton, BorderLayout.EAST);
-		buttonsPanel.add(stopButton, BorderLayout.SOUTH);
+		buttonsPanel.add(stopButton, BorderLayout.CENTER);
 	}
 
 	public static void loading(){
