@@ -3,6 +3,7 @@ import java.io.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Color;
 import java.util.*;
 import javazoom.jl.player.*;
 
@@ -23,7 +24,7 @@ public class MP3Player{
 	private static int index;
 
 	private static JFrame frame;
-	//********************************************** test branch
+	
 	private static JPanel upperMainPanel;
 	private static JPanel lowerMainPanel;
 	private static JPanel buttonsPanel;
@@ -36,15 +37,14 @@ public class MP3Player{
 
 	public static void main(String[] args){
 
+		//load initial stuff
 		loading();
 
+		//set up the panels
 		PanelInit();
 
+		//set up the play buttons
 		buttonsInit();
-
-
-
-		
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
@@ -58,9 +58,12 @@ public class MP3Player{
 		buttonsPanel = new JPanel();
 		tempPanel = new JPanel();
 
-		upperMainPanel.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT - 200);
-		lowerMainPanel.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT - 400);
-		tempPanel.setSize(DEFAULT_WIDTH - 200, DEFAULT_HEIGHT - 400);
+		upperMainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT * 4 / 5));
+		lowerMainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT / 5));
+		tempPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 4, DEFAULT_HEIGHT / 5));
+
+		//temp code for clearify upper panel
+		upperMainPanel.setBackground(Color.BLACK);
 
 		lowerMainPanel.setLayout(new BorderLayout());
 		lowerMainPanel.add(tempPanel, BorderLayout.CENTER);
