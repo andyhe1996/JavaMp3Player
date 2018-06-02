@@ -152,6 +152,7 @@ public class MP3Player{
 		//stop button function
 		class StopListener implements ActionListener{
 			public void actionPerformed(ActionEvent e){
+				preSongIndex = index;
 				stopMusic();
 			}
 		}
@@ -224,7 +225,7 @@ public class MP3Player{
 			stopMusic();
 
 			//give now playing mark
-			int nowPlayingIndex = nameList[preSongIndex].lastIndexOf('<');
+			int nowPlayingIndex = nameList[preSongIndex].lastIndexOf('<') - 1;
 			if(nowPlayingIndex >= 0){
 				nameList[preSongIndex] = nameList[preSongIndex].substring(0, nowPlayingIndex);
 			}
