@@ -61,8 +61,19 @@ public class MP3Player{
 
 	public static void listInit(){
 		String[] list = new String[playList.size()];
+		char dash = '-';
+		char dot = '.';
 		for(int i = 0; i < playList.size(); i++){
-			list[i] = playList.get(i);
+			String fullName = playList.get(i);
+			int beginIndex = fullName.indexOf(dash);
+			if(beginIndex < 0){
+				beginIndex = 0;
+			}
+			else{
+				beginIndex++;
+			}
+			int endIndex = fullName.lastIndexOf(dot);
+			list[i] = fullName.substring(beginIndex, endIndex);
 		}
 		//System.out.println(list[0]);
 		showList = new JList<String>(list);
