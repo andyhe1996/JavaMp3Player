@@ -25,8 +25,10 @@ public class MP3Player{
 	private static JFrame frame;
 
 	private static JPanel buttonsPanel;
+
 	private static JButton playPauseButton;
 	private static JButton playNextButton;
+	private static JButton playPreButton;
 	private static JButton stopButton;
 
 	public static void main(String[] args){
@@ -35,42 +37,7 @@ public class MP3Player{
 
 		buttonsPanelInit();
 
-		class PlayPauseListener implements ActionListener{
-			public void actionPerformed(ActionEvent e){
-				if(playMP3 == null)
-					playNextMusic();
-				else{
-					if(player.isPause()){
-						player.resume();
-					}
-					else{
-						player.pause();
-					}
-				}
-			}
-		}
-		PlayPauseListener playPauseListener = new PlayPauseListener();
-		playPauseButton.addActionListener(playPauseListener);
-		
-		class PlayNextListener implements ActionListener{
-			public void actionPerformed(ActionEvent e){
-				playNextMusic();
-			}
-		}
-		PlayNextListener playNextListener = new PlayNextListener();
-		playNextButton.addActionListener(playNextListener);
 
-		class StopListener implements ActionListener{
-			public void actionPerformed(ActionEvent e){
-				stopMusic();
-			}
-		}
-		StopListener stopListener = new StopListener();
-		stopButton.addActionListener(stopListener);
-
-		buttonsPanel.add(playPauseButton);
-		buttonsPanel.add(playNextButton);
-		buttonsPanel.add(stopButton);
 
 		frame.setLayout(new BorderLayout());
 		frame.add(buttonsPanel, BorderLayout.NORTH);
@@ -84,6 +51,7 @@ public class MP3Player{
 		buttonsPanel = new JPanel();
 		playPauseButton = new JButton("play/pause");
 		playNextButton = new JButton("play next");
+		playPreButton = new JButton("play previous");
 		stopButton = new JButton("stop");
 		buttonsPanel.setSize(DEFAULT_WIDTH - 200, DEFAULT_HEIGHT);
 
@@ -91,8 +59,58 @@ public class MP3Player{
 		int buttonsizeY = 50;
 		playPauseButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
 		playNextButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
+		playPreButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
 		stopButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
 
+		//play pause button function
+		class PlayPauseListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				if(playMP3 == null)
+					startMusic();
+				else{
+					if(player.isPause()){
+						player.resume();
+					}
+					else{
+						player.pause();
+					}
+				}
+			}
+		}
+		PlayPauseListener playPauseListener = new PlayPauseListener();
+		playPauseButton.addActionListener(playPauseListener);
+		
+		//play next button function
+		class PlayNextListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				playNextMusic();
+			}
+		}
+		PlayNextListener playNextListener = new PlayNextListener();
+		playNextButton.addActionListener(playNextListener);
+
+		//play previous button function
+		class PlayPreListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				playPreMusic();
+			}
+		}
+		PlayPreListener playPreListener = new PlayPreListener();
+		playPreButton.addActionListener(playPreListener);
+
+		//stop button function
+		class StopListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				stopMusic();
+			}
+		}
+		StopListener stopListener = new StopListener();
+		stopButton.addActionListener(stopListener);
+
+		buttonsPanel.add(playPreButton);
+		buttonsPanel.add(playPauseButton);
+		buttonsPanel.add(playNextButton);
+		buttonsPanel.add(stopButton);
 	}
 
 	public static void loading(){
@@ -114,19 +132,33 @@ public class MP3Player{
 	}
 
 	public static void playNextMusic(){
+		index++;
+		if(index >= playList.size()){
+				index = 0;
+		}
+		startMusic();
+	}
+
+	public static void playPreMusic(){
+		index--;
+		if(index < 0){
+				index = playList.size() - 1;
+		}
+		startMusic();
+	}
+
+	private static void startMusic(){
 		try{
 			stopMusic();
 
-			String musicPath = musicFolder.getName() + "/" + playList.get(index++);
+			String musicPath = musicFolder.getName() + "/" + playList.get(index);
 			fis = new FileInputStream(musicPath);
 			playMP3 = new Player(fis);
 			player = new MusicPlayer(playMP3);
 			curPlay = new Thread(player);
 			curPlay.start();
 
-			if(index >= playList.size()){
-				index = 0;
-			}
+			
 		}
 		catch(Exception e){
 			e.printStackTrace();
