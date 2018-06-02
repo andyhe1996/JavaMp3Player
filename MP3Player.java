@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 import java.io.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
@@ -39,6 +41,7 @@ public class MP3Player{
 	private static JButton playPreButton;
 	private static JButton stopButton;
 
+	private static JScrollPane scrollBar;
 	private static JList<String> showList;
 
 	public static void main(String[] args){
@@ -63,9 +66,30 @@ public class MP3Player{
 
 	public static void listInit(){
 		
+		scrollBar = new JScrollPane();
 		showList = new JList<String>(nameList);
 
-		listPanel.add(showList);
+		int listWidth = (int)listPanel.getPreferredSize().getWidth() * 9 / 10;
+		int listHeight = (int)listPanel.getPreferredSize().getHeight() * 9 / 10;
+		scrollBar.setPreferredSize(new Dimension(listWidth, listHeight));
+		showList.setPreferredSize(new Dimension(listWidth, listHeight));
+		showList.setFixedCellHeight(listHeight / 20);
+
+		//add listener
+		class MusicListListener implements ListSelectionListener{
+			public void valueChanged(ListSelectionEvent e){
+				//preSongIndex = index;
+				//index = showList.getSelectedIndex();
+				//startMusic();
+				System.out.println(e.getFirstIndex() + " " + e.getLastIndex() + " " + index);
+			}
+		}
+		MusicListListener musicListListener = new MusicListListener();
+		showList.addListSelectionListener(musicListListener);
+
+
+		scrollBar.setViewportView(showList);
+		listPanel.add(scrollBar);
 	}
 
 	public static void PanelInit(){
