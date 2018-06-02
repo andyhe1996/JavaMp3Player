@@ -37,20 +37,9 @@ public class MP3Player{
 
 		class PlayPauseListener implements ActionListener{
 			public void actionPerformed(ActionEvent e){
-				if(curPlay == null)
+				if(playMP3 == null)
 					playNextMusic();
 				else{
-					// try{
-					// 	if(isPause == false){
-					// 		isPause = true;
-					// 	}
-					// 	else{
-					// 		isPause = false;
-					// 	}
-					// }catch(InterruptedException exce){
-					// 	exce.printStackTrace();
-					// }
-					//playPauseMusic();
 					if(player.isPause()){
 						player.resume();
 					}
@@ -122,18 +111,6 @@ public class MP3Player{
         	}
     	}
 		
-	}
-
-	public static void playPauseMusic(){
-		try{
-			stopMusic();
-			playMP3 = new Player(fis);
-			MusicPlayer player = new MusicPlayer(playMP3);
-			curPlay = new Thread(player);
-			curPlay.start();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
 	}
 
 	public static void playNextMusic(){
