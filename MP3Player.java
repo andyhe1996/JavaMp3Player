@@ -22,6 +22,8 @@ public class MP3Player{
 	private static File musicFolder;
 	private static ArrayList<String> playList;
 	private static int index;
+	private static int preSongIndex;
+	private static String[] nameList;
 
 	private static JFrame frame;
 	
@@ -60,23 +62,8 @@ public class MP3Player{
 	}
 
 	public static void listInit(){
-		String[] list = new String[playList.size()];
-		char dash = '-';
-		char dot = '.';
-		for(int i = 0; i < playList.size(); i++){
-			String fullName = playList.get(i);
-			int beginIndex = fullName.indexOf(dash);
-			if(beginIndex < 0){
-				beginIndex = 0;
-			}
-			else{
-				beginIndex++;
-			}
-			int endIndex = fullName.lastIndexOf(dot);
-			list[i] = fullName.substring(beginIndex, endIndex);
-		}
-		//System.out.println(list[0]);
-		showList = new JList<String>(list);
+		
+		showList = new JList<String>(nameList);
 
 		listPanel.add(showList);
 	}
@@ -181,12 +168,14 @@ public class MP3Player{
 	public static void loading(){
 		playList = new ArrayList<String>();
 		index = 0;
+		preSongIndex = 0;
 		isPause = false;
 
 		frame = new JFrame("MyMP3Player");
 		frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		frame.setLayout(new BorderLayout());
 
+		//create the playlist
 		musicFolder = new File("Music");
 		for (File fileEntry : musicFolder.listFiles()) {
 			if(fileEntry.getName().charAt(0) != '.'){
@@ -194,11 +183,28 @@ public class MP3Player{
             	playList.add(fileEntry.getName());
         	}
     	}
+
+    	//create the music name list
+    	nameList = new String[playList.size()];
+		char dash = '-';
+		char dot = '.';
+		for(int i = 0; i < playList.size(); i++){
+			String fullName = playList.get(i);
+			int beginIndex = fullName.indexOf(dash);
+			if(beginIndex < 0){
+				beginIndex = 0;
+			}
+			else{
+				beginIndex++;
+			}
+			int endIndex = fullName.lastIndexOf(dot);
+			nameList[i] = fullName.substring(beginIndex, endIndex);
+		}
 		
 	}
 
 	public static void playNextMusic(){
-		index++;
+		preSongIndex = index++;
 		if(index >= playList.size()){
 				index = 0;
 		}
@@ -206,7 +212,7 @@ public class MP3Player{
 	}
 
 	public static void playPreMusic(){
-		index--;
+		preSongIndex = index--;
 		if(index < 0){
 				index = playList.size() - 1;
 		}
@@ -216,6 +222,14 @@ public class MP3Player{
 	private static void startMusic(){
 		try{
 			stopMusic();
+
+			//give now playing mark
+			int nowPlayingIndex = nameList[preSongIndex].lastIndexOf('<');
+			if(nowPlayingIndex >= 0){
+				nameList[preSongIndex] = nameList[preSongIndex].substring(0, nowPlayingIndex);
+			}
+			nameList[index] = nameList[index] + " <-playing";
+			showList.setListData(nameList);
 
 			String musicPath = musicFolder.getName() + "/" + playList.get(index);
 			fis = new FileInputStream(musicPath);
