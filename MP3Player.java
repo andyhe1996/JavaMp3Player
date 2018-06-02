@@ -27,13 +27,17 @@ public class MP3Player{
 	
 	private static JPanel upperMainPanel;
 	private static JPanel lowerMainPanel;
+	private static JPanel listPanel;
+	private static JPanel upperTempPanel;
 	private static JPanel buttonsPanel;
-	private static JPanel tempPanel;
+	private static JPanel lowerTempPanel;
 
 	private static JButton playPauseButton;
 	private static JButton playNextButton;
 	private static JButton playPreButton;
 	private static JButton stopButton;
+
+	private static JList<String> showList;
 
 	public static void main(String[] args){
 
@@ -45,6 +49,9 @@ public class MP3Player{
 
 		//set up the play buttons
 		buttonsInit();
+
+		//set up the music list
+		listInit();
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
@@ -52,21 +59,42 @@ public class MP3Player{
 
 	}
 
+	public static void listInit(){
+		String[] list = new String[playList.size()];
+		for(int i = 0; i < playList.size(); i++){
+			list[i] = playList.get(i);
+		}
+		//System.out.println(list[0]);
+		showList = new JList<String>(list);
+
+		listPanel.add(showList);
+	}
+
 	public static void PanelInit(){
 		upperMainPanel = new JPanel();
 		lowerMainPanel = new JPanel();
+		listPanel = new JPanel();
+		upperTempPanel = new JPanel();
 		buttonsPanel = new JPanel();
-		tempPanel = new JPanel();
+		lowerTempPanel = new JPanel();
 
 		upperMainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT * 4 / 5));
 		lowerMainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT / 5));
-		tempPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 4, DEFAULT_HEIGHT / 5));
+		
+		listPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 8, DEFAULT_HEIGHT * 4 / 5));
+
+		lowerTempPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 5, DEFAULT_HEIGHT / 5));
 
 		//temp code for clearify upper panel
-		upperMainPanel.setBackground(Color.BLACK);
+		upperTempPanel.setBackground(Color.BLACK);
+		upperMainPanel.setLayout(new BorderLayout());
+		upperMainPanel.add(listPanel, BorderLayout.WEST);
+		upperMainPanel.add(upperTempPanel, BorderLayout.CENTER);
 
+		//lowerMainPanel stuff
+		lowerTempPanel.setBackground(Color.WHITE);
 		lowerMainPanel.setLayout(new BorderLayout());
-		lowerMainPanel.add(tempPanel, BorderLayout.CENTER);
+		lowerMainPanel.add(lowerTempPanel, BorderLayout.CENTER);
 		lowerMainPanel.add(buttonsPanel, BorderLayout.WEST);
 
 		frame.add(upperMainPanel, BorderLayout.CENTER);
@@ -81,7 +109,7 @@ public class MP3Player{
 		stopButton = new JButton("stop");
 		
 		int buttonsizeX = 100;
-		int buttonsizeY = 50;
+		int buttonsizeY = 60;
 		playPauseButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
 		playNextButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
 		playPreButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
