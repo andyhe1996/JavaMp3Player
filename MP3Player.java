@@ -24,7 +24,10 @@ public class MP3Player{
 
 	private static JFrame frame;
 
+	private static JPanel upperMainPanel;
+	private static JPanel lowerMainPanel;
 	private static JPanel buttonsPanel;
+	private static JPanel tempPanel;
 
 	private static JButton playPauseButton;
 	private static JButton playNextButton;
@@ -35,26 +38,45 @@ public class MP3Player{
 
 		loading();
 
-		buttonsPanelInit();
+		PanelInit();
+
+		buttonsInit();
 
 
 
-		frame.setLayout(new BorderLayout());
-		frame.add(buttonsPanel, BorderLayout.NORTH);
+		
+		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
 
 	}
 
-	public static void buttonsPanelInit(){
+	public static void PanelInit(){
+		upperMainPanel = new JPanel();
+		lowerMainPanel = new JPanel();
 		buttonsPanel = new JPanel();
+		tempPanel = new JPanel();
+
+		upperMainPanel.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT - 200);
+		lowerMainPanel.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT - 400);
+		tempPanel.setSize(DEFAULT_WIDTH - 200, DEFAULT_HEIGHT - 400);
+
+		lowerMainPanel.setLayout(new BorderLayout());
+		lowerMainPanel.add(tempPanel, BorderLayout.CENTER);
+		lowerMainPanel.add(buttonsPanel, BorderLayout.WEST);
+
+		frame.add(upperMainPanel, BorderLayout.CENTER);
+		frame.add(lowerMainPanel, BorderLayout.SOUTH);
+	}
+
+	public static void buttonsInit(){
+
 		playPauseButton = new JButton("play/pause");
 		playNextButton = new JButton("play next");
 		playPreButton = new JButton("play previous");
 		stopButton = new JButton("stop");
-		buttonsPanel.setSize(DEFAULT_WIDTH - 200, DEFAULT_HEIGHT);
-
+		
 		int buttonsizeX = 100;
 		int buttonsizeY = 50;
 		playPauseButton.setPreferredSize(new Dimension(buttonsizeX, buttonsizeY));
@@ -107,10 +129,11 @@ public class MP3Player{
 		StopListener stopListener = new StopListener();
 		stopButton.addActionListener(stopListener);
 
-		buttonsPanel.add(playPreButton);
-		buttonsPanel.add(playPauseButton);
-		buttonsPanel.add(playNextButton);
-		buttonsPanel.add(stopButton);
+		buttonsPanel.setLayout(new BorderLayout());
+		buttonsPanel.add(playPreButton, BorderLayout.WEST);
+		buttonsPanel.add(playPauseButton, BorderLayout.CENTER);
+		buttonsPanel.add(playNextButton, BorderLayout.EAST);
+		buttonsPanel.add(stopButton, BorderLayout.SOUTH);
 	}
 
 	public static void loading(){
@@ -120,6 +143,7 @@ public class MP3Player{
 
 		frame = new JFrame("MyMP3Player");
 		frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		frame.setLayout(new BorderLayout());
 
 		musicFolder = new File("Music");
 		for (File fileEntry : musicFolder.listFiles()) {
