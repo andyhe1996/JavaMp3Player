@@ -18,6 +18,7 @@ public class MP3Player{
 
 	public static boolean isPause;
 
+
 	private static File musicFolder;
 	private static ArrayList<String> playList;
 	private static int index;
