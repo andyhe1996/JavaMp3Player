@@ -1,19 +1,27 @@
 import java.lang.Runnable;
+import java.io.*;
 
 import javazoom.jl.player.*;
+
 
 
 public class MusicPlayer implements Runnable{
 
 	private static Player player;
+	//private static String musicPath;
 	private static Object pauseLock;
 	private boolean pause;
 
-	public MusicPlayer(Player player){
-		this.player = player;
-		pauseLock = new Object();
-		pause = false;
-		playing = true;
+	public MusicPlayer(String path){
+		//musicPath = path;
+		try{
+			player = new Player(new FileInputStream(path));
+			pauseLock = new Object();
+			pause = false;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 
 	}
 
@@ -50,7 +58,7 @@ public class MusicPlayer implements Runnable{
 	}
 
 	public void stop(){
-
+		player.close();
 	}
 
 	public boolean isPause(){

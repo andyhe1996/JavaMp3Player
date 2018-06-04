@@ -7,16 +7,16 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.util.*;
-import javazoom.jl.player.*;
-import javazoom.jl.player.advanced.*;
+//import javazoom.jl.player.*;
+//import javazoom.jl.player.advanced.*;
 
 public class MP3Player{
 
 	private static final int DEFAULT_WIDTH = 800;
 	private static final int DEFAULT_HEIGHT = 600;
 
-	private static Player playMP3;
-	private static FileInputStream fis;
+	//private static Player playMP3;
+	//private static FileInputStream fis;
 	private static MusicPlayer player;
 	private static Thread curPlay;
 
@@ -162,7 +162,7 @@ public class MP3Player{
 		//play pause button function
 		class PlayPauseListener implements ActionListener{
 			public void actionPerformed(ActionEvent e){
-				if(playMP3 == null)
+				if(player == null)
 					startMusic();
 				else{
 					if(player.isPause()){
@@ -279,9 +279,9 @@ public class MP3Player{
 			showList.setListData(nameList);
 
 			String musicPath = musicFolder.getName() + "/" + playList.get(index);
-			fis = new FileInputStream(musicPath);
-			playMP3 = new Player(fis);
-			player = new MusicPlayer(playMP3);
+			//fis = new FileInputStream(musicPath);
+			//playMP3 = new Player(fis);
+			player = new MusicPlayer(musicPath);
 			curPlay = new Thread(player);
 			curPlay.start();
 
@@ -295,9 +295,10 @@ public class MP3Player{
 	public static void stopMusic(){
 		try{
 
-			if(playMP3 != null){
-				playMP3.close();
-				playMP3 = null;
+			if(player != null){
+				player.stop();
+				//playMP3.close();
+				player = null;
 			}
 		}
 		catch(Exception e){
