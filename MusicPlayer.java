@@ -8,10 +8,10 @@ public class MusicPlayer implements Runnable{
 	private static Player player;
 	private static Object pauseLock;
 	private boolean pause;
-	private boolean playing;
 
 	public MusicPlayer(Player player){
 		this.player = player;
+		pauseLock = new Object();
 		pause = false;
 		playing = true;
 
@@ -19,9 +19,13 @@ public class MusicPlayer implements Runnable{
 
 	public void run(){
 		try{
-			while(playing && !player.isComplete()){
-				if(!pause)
-					player.play(1);
+			while(player.play(1) && !player.isComplete()){
+				if(pause){
+					synchronized(pauseLock){
+					pauseLock.wait();
+					}
+				}
+					//player.play(1);
 			}
 			if(player.isComplete()){
 				System.out.println("complete");
@@ -40,10 +44,13 @@ public class MusicPlayer implements Runnable{
 
 	public void resume(){
 		pause = false;
+		synchronized(pauseLock){
+			pauseLock.notify();
+		}
 	}
 
 	public void stop(){
-		playing = false;
+
 	}
 
 	public boolean isPause(){

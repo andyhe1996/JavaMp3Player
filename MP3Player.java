@@ -296,7 +296,6 @@ public class MP3Player{
 		try{
 
 			if(playMP3 != null){
-				player.stop();
 				playMP3.close();
 				playMP3 = null;
 			}
