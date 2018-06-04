@@ -76,16 +76,37 @@ public class MP3Player{
 		showList.setFixedCellHeight(listHeight / 20);
 
 		//add listener
-		class MusicListListener implements ListSelectionListener{
-			public void valueChanged(ListSelectionEvent e){
-				//preSongIndex = index;
-				//index = showList.getSelectedIndex();
-				//startMusic();
-				System.out.println(e.getFirstIndex() + " " + e.getLastIndex() + " " + index);
-			}
+		// class MusicListListener implements ListSelectionListener{
+		// 	public void valueChanged(ListSelectionEvent e){
+		// 		preSongIndex = index;
+		// 		index = showList.getSelectedIndex();
+		// 		//startMusic();
+		// 		System.out.println(e.getFirstIndex() + " " + e.getLastIndex() + " " + index);
+		// 	}
+		// }
+		// MusicListListener musicListListener = new MusicListListener();
+		// showList.addListSelectionListener(musicListListener);
+
+		class DoubleClickListener extends MouseAdapter{
+			public void mouseClicked(MouseEvent evt) {
+	        	JList list = (JList)evt.getSource();
+
+    	    	if (evt.getClickCount() == 2) {
+            	// Double-click detected
+    	    	preSongIndex = index;
+            	index = list.locationToIndex(evt.getPoint());
+            	System.out.println(index);
+            	startMusic();
+        		} 
+        		// else if (evt.getClickCount() == 3) {
+				// Triple-click detected
+        		// int i = list.locationToIndex(evt.getPoint());
+        		// System.out.println(i);
+       			// }
+       		}
 		}
-		MusicListListener musicListListener = new MusicListListener();
-		showList.addListSelectionListener(musicListListener);
+		MouseListener doubleClick = new DoubleClickListener();
+		showList.addMouseListener(doubleClick);
 
 
 		scrollBar.setViewportView(showList);
