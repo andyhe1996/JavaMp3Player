@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Color;
 import java.util.*;
 import javazoom.jl.player.*;
+import javazoom.jl.player.advanced.*;
 
 public class MP3Player{
 
