@@ -27,7 +27,7 @@ public class MusicPlayer implements Runnable{
 
 	public void run(){
 		try{
-			while(player.play(1) && !player.isComplete()){
+			while(player.play(1)){
 				if(pause){
 					synchronized(pauseLock){
 					pauseLock.wait();
@@ -59,6 +59,9 @@ public class MusicPlayer implements Runnable{
 
 	public void stop(){
 		player.close();
+		synchronized(pauseLock){
+			pauseLock.notify();
+		}
 	}
 
 	public boolean isPause(){
