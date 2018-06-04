@@ -58,11 +58,20 @@ public class MP3Player{
 
 		//set up the music list
 		listInit();
+
+		//set up the music duration bar
+		musicBarInit();
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
 
+	}
+
+	public static void musicBarInit(){
+		MusicBar bar = new MusicBar(lowerTempPanel.getPreferredSize().getWidth() - 30.0, 1.0);
+
+		lowerTempPanel.add(bar);
 	}
 
 	public static void listInit(){
