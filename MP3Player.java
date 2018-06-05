@@ -1,12 +1,15 @@
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import javax.sound.sampled.*;
 import java.io.*;
 import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.util.*;
+import javazoom.spi.mpeg.sampled.file.*;
+import org.tritonus.share.sampled.file.*;
 //import javazoom.jl.player.*;
 //import javazoom.jl.player.advanced.*;
 
@@ -304,10 +307,12 @@ public class MP3Player{
 			//fis = new FileInputStream(musicPath);
 			//playMP3 = new Player(fis);
 			player = new MusicPlayer(musicPath);
+			player.setTimer(timerDisplay);
 			curPlay = new Thread(player);
 			curPlay.start();
 
-			
+			// AudioFileFormat af = AudioSystem.getAudioFileFormat(new File(musicPath));
+		
 		}
 		catch(Exception e){
 			e.printStackTrace();

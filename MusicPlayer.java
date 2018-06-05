@@ -1,4 +1,5 @@
 import java.lang.Runnable;
+import javax.swing.JLabel;
 import java.io.*;
 
 import javazoom.jl.player.*;
@@ -10,6 +11,7 @@ public class MusicPlayer implements Runnable{
 	private static Player player;
 	//private static String musicPath;
 	private static Object pauseLock;
+	private JLabel timer;
 	private boolean pause;
 
 	public MusicPlayer(String path){
@@ -32,6 +34,9 @@ public class MusicPlayer implements Runnable{
 					synchronized(pauseLock){
 					pauseLock.wait();
 					}
+				}
+				else{
+					UpdateCurrentTime();
 				}
 			}
 			if(player.isComplete()){
@@ -58,6 +63,7 @@ public class MusicPlayer implements Runnable{
 
 	public void stop(){
 		player.close();
+		UpdateCurrentTime();
 		synchronized(pauseLock){
 			pauseLock.notify();
 		}
@@ -67,4 +73,28 @@ public class MusicPlayer implements Runnable{
 		return pause;
 	}
 	
+	public void setTimer(JLabel timer){
+		this.timer = timer;
+	}
+
+	//int millisecond
+	public void UpdateCurrentTime(){
+		if(timer != null){
+			int millisec = player.getPosition();
+			int sec = millisec / 1000;
+			int min = sec / 60;
+			sec = sec % 60;
+
+			String curTime = "";
+			if(min < 10){
+				curTime += "0";
+			}
+			curTime += min + ":";
+			if(sec < 10){
+				curTime += "0";
+			}
+			curTime += sec + " ";
+			timer.setText(curTime);
+		}
+	}
 }
