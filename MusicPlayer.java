@@ -33,7 +33,6 @@ public class MusicPlayer implements Runnable{
 					pauseLock.wait();
 					}
 				}
-					//player.play(1);
 			}
 			if(player.isComplete()){
 				System.out.println("complete");

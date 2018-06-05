@@ -45,6 +45,9 @@ public class MP3Player{
 	private static JScrollPane scrollBar;
 	private static JList<String> showList;
 
+	private static MusicBar bar;
+	private static JLabel timerDisplay;
+
 	public static void main(String[] args){
 
 		//load initial stuff
@@ -69,9 +72,18 @@ public class MP3Player{
 	}
 
 	public static void musicBarInit(){
-		MusicBar bar = new MusicBar(lowerTempPanel.getPreferredSize().getWidth() - 30.0, 1.0);
 
-		lowerTempPanel.add(bar);
+		double barWidth = lowerTempPanel.getPreferredSize().getWidth() - 50.0;
+		double barHeight = lowerTempPanel.getPreferredSize().getHeight();
+
+		//MusicBar(width, height, thickness)
+		bar = new MusicBar(barWidth, barHeight, 2);
+
+		timerDisplay = new JLabel("00:00 ");
+
+
+		lowerTempPanel.add(timerDisplay, BorderLayout.EAST);
+		lowerTempPanel.add(bar, BorderLayout.CENTER);
 	}
 
 	public static void listInit(){
@@ -146,6 +158,7 @@ public class MP3Player{
 
 		//lowerMainPanel stuff
 		lowerTempPanel.setBackground(Color.WHITE);
+		lowerTempPanel.setLayout(new BorderLayout());
 		lowerMainPanel.setLayout(new BorderLayout());
 		lowerMainPanel.add(lowerTempPanel, BorderLayout.CENTER);
 		lowerMainPanel.add(buttonsPanel, BorderLayout.WEST);
