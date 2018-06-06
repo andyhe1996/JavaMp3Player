@@ -199,6 +199,7 @@ public class MP3Player{
 					}
 					else{
 						player.pause();
+						Thread.currentThread().yield();
 					}
 				}
 			}
@@ -315,7 +316,7 @@ public class MP3Player{
 
 			//get the duration of the music
 			int duration = (int)getDuration(new File(musicPath));
-			
+
 
 			//play the music
 			player = new MusicPlayer(musicPath, duration);
