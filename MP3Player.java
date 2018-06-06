@@ -367,7 +367,7 @@ public class MP3Player{
 	public static void startMusicAtPos(int startPos){
 
 		preSongIndex = index;
-		
+
 		try{
 			stopMusic();
 
@@ -415,7 +415,7 @@ public class MP3Player{
 			int mili = (int) (microseconds / 1000);
 			int sec = (mili / 1000) % 60;
 			int min = (mili / 1000) / 60;
-			System.out.println("time = " + min + ":" + sec);
+			System.out.println("duration of song = " + min + ":" + sec);
 		} else {
 			throw new UnsupportedAudioFileException();
 		}

@@ -61,14 +61,14 @@ public class MusicPlayer implements Runnable{
 				}
 			}
 			if(player.isComplete()){
-				System.out.println("complete");
+				System.out.println("song complete");
 				MP3Player.playNextMusic();
 			}
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		System.out.println("finish");
+		System.out.println("previous session finish");
 	}
 
 	public void pause(){
