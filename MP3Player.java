@@ -366,6 +366,8 @@ public class MP3Player{
 	//the position as millisecond
 	public static void startMusicAtPos(int startPos){
 
+		preSongIndex = index;
+		
 		try{
 			stopMusic();
 
