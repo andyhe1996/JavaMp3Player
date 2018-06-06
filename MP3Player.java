@@ -321,6 +321,7 @@ public class MP3Player{
 			//play the music
 			player = new MusicPlayer(musicPath, duration);
 			player.setTimer(timerDisplay);
+			player.setMusicBar(bar);
 			curPlay = new Thread(player);
 			curPlay.start();
 		

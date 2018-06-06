@@ -4,9 +4,15 @@ import java.awt.geom.*;
 
 public class MusicBar extends JComponent{
 
+	private static final double SPACE_WIDTH = 10.0;
+
 	private double width;
 	private double height;
 	private int thickness;
+	private double dimeter;
+
+	private Line2D.Double progressLine;
+	private Ellipse2D.Double progressBall;
 
 	public MusicBar(){
 		this(100.0, 50.0, 1);
@@ -16,6 +22,11 @@ public class MusicBar extends JComponent{
 		this.width = width;
 		this.height = height;
 		this.thickness = thickness;
+		dimeter = thickness * 4.0;
+
+		//set up the geometry
+		progressLine = new Line2D.Double(SPACE_WIDTH, height / 2.0, SPACE_WIDTH + width, height / 2.0);
+		progressBall = new Ellipse2D.Double(SPACE_WIDTH - (dimeter / 2.0), height / 2.0 - (dimeter / 2.0), dimeter, dimeter);
 
 		setPreferredSize(new Dimension((int) width, (int) height));
 
@@ -26,13 +37,16 @@ public class MusicBar extends JComponent{
 		
 		g2.setColor(Color.BLACK);
 		g2.setStroke(new BasicStroke(thickness));
-		Line2D.Double progressLine = new Line2D.Double(10.0, height / 2.0, 10.0 + width, height / 2.0);
-
-		double dimeter = thickness * 4.0;
-		Ellipse2D.Double progressBall = new Ellipse2D.Double(10.0 - (dimeter / 2.0), height / 2.0 - (dimeter / 2.0), dimeter, dimeter);
-
 		g2.draw(progressLine);
 		g2.fill(progressBall);
 
+	}
+
+	//current milli second
+	public void updateProgress(int curMS, int totalMS){
+		//find the current position by looking at the percentage complete
+		double curPos = SPACE_WIDTH + ((double)curMS / (double)totalMS * width);
+		progressBall.setFrame(curPos - (dimeter / 2.0), height / 2.0 - (dimeter / 2.0), dimeter, dimeter);
+		repaint();
 	}
 }

@@ -15,6 +15,7 @@ public class MusicPlayer implements Runnable{
 	private static int duration;
 	private JLabel timer;
 	private boolean pause;
+	private MusicBar panelMusicBar;
 
 	public MusicPlayer(String path, int duration){
 		//musicPath = path;
@@ -39,6 +40,7 @@ public class MusicPlayer implements Runnable{
 				}
 				else{
 					UpdateCurrentTime();
+
 				}
 			}
 			if(player.isComplete()){
@@ -79,6 +81,10 @@ public class MusicPlayer implements Runnable{
 		this.timer = timer;
 	}
 
+	public void setMusicBar(MusicBar mB){
+		panelMusicBar = mB;
+	}
+
 	//int millisecond
 	public void UpdateCurrentTime(){
 		if(timer != null){
@@ -97,6 +103,10 @@ public class MusicPlayer implements Runnable{
 			}
 			curTime += sec + "  ";
 			timer.setText(curTime);
+		}
+
+		if(panelMusicBar != null){
+			panelMusicBar.updateProgress(player.getPosition(), duration);
 		}
 	}
 }
