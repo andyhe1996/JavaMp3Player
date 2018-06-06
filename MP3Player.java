@@ -39,7 +39,7 @@ public class MP3Player{
 	private static JPanel listPanel;
 	private static JPanel upperTempPanel;
 	private static JPanel buttonsPanel;
-	private static JPanel lowerTempPanel;
+	private static JPanel musicBarPanel;
 
 	private static JButton playPauseButton;
 	private static JButton playNextButton;
@@ -78,11 +78,19 @@ public class MP3Player{
 	//initialize the music progress bar, with timers
 	public static void musicBarInit(){
 
-		double barWidth = lowerTempPanel.getPreferredSize().getWidth() - 50.0;
-		double barHeight = lowerTempPanel.getPreferredSize().getHeight();
+		int barPanelWidth = (int)musicBarPanel.getPreferredSize().getWidth();
+		int barPanelHeight = (int)musicBarPanel.getPreferredSize().getHeight();
+
+		int timerWidth = 50;
+		int progressBarWidth = barPanelWidth - timerWidth;
+		int progressBarHeight = 10;
 
 		//MusicBar(width, height, thickness)
-		bar = new MusicBar(barWidth, barHeight, 2);
+		bar = new MusicBar((double)progressBarWidth, (double)progressBarHeight, 2);
+		bar.setBounds(MusicBar.SPACE_WIDTH, barPanelHeight / 2, progressBarWidth, progressBarHeight);
+
+		timerDisplay = new JLabel("00:00  ");
+		timerDisplay.setBounds(2 * MusicBar.SPACE_WIDTH + progressBarWidth, barPanelHeight / 2, timerWidth, progressBarHeight);
 
 		//set up drag listener for draging
 		class DragBarListener extends MouseAdapter{
@@ -106,11 +114,8 @@ public class MP3Player{
 		bar.addMouseListener(dragBarListener);
 		bar.addMouseMotionListener((MouseMotionListener)dragBarListener);
 
-		timerDisplay = new JLabel("00:00  ");
-
-
-		lowerTempPanel.add(timerDisplay, BorderLayout.EAST);
-		lowerTempPanel.add(bar, BorderLayout.CENTER);
+		musicBarPanel.add(timerDisplay);
+		musicBarPanel.add(bar);
 	}
 
 	//initialize the music list
@@ -169,14 +174,14 @@ public class MP3Player{
 		listPanel = new JPanel();
 		upperTempPanel = new JPanel();
 		buttonsPanel = new JPanel();
-		lowerTempPanel = new JPanel();
+		musicBarPanel = new JPanel();
 
 		upperMainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT * 4 / 5));
 		lowerMainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT / 5));
 		
 		listPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 8, DEFAULT_HEIGHT * 4 / 5));
 
-		lowerTempPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 5, DEFAULT_HEIGHT / 5));
+		musicBarPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 5, DEFAULT_HEIGHT / 5));
 
 		//temp code for clearify upper panel
 		upperTempPanel.setBackground(Color.BLACK);
@@ -185,10 +190,10 @@ public class MP3Player{
 		upperMainPanel.add(upperTempPanel, BorderLayout.CENTER);
 
 		//lowerMainPanel stuff
-		lowerTempPanel.setBackground(Color.WHITE);
-		lowerTempPanel.setLayout(new BorderLayout());
+		musicBarPanel.setBackground(Color.WHITE);
+		musicBarPanel.setLayout(null);
 		lowerMainPanel.setLayout(new BorderLayout());
-		lowerMainPanel.add(lowerTempPanel, BorderLayout.CENTER);
+		lowerMainPanel.add(musicBarPanel, BorderLayout.CENTER);
 		lowerMainPanel.add(buttonsPanel, BorderLayout.WEST);
 
 		frame.add(upperMainPanel, BorderLayout.CENTER);

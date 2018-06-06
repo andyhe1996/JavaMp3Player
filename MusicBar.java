@@ -4,7 +4,7 @@ import java.awt.geom.*;
 
 public class MusicBar extends JComponent{
 
-	private static final double SPACE_WIDTH = 10.0;
+	public static final int SPACE_WIDTH = 10;
 
 	private double width;
 	private double height;
@@ -27,8 +27,8 @@ public class MusicBar extends JComponent{
 		dimeter = thickness * 4.0;
 
 		//set up the geometry
-		progressLine = new Line2D.Double(SPACE_WIDTH, height / 2.0, SPACE_WIDTH + width, height / 2.0);
-		progressBall = new Ellipse2D.Double((SPACE_WIDTH) - (dimeter / 2.0), (height / 2.0) - (dimeter / 2.0), dimeter, dimeter);
+		progressLine = new Line2D.Double(0.0, height / 2.0, width, height / 2.0);
+		progressBall = new Ellipse2D.Double(0.0 - (dimeter / 2.0), (height / 2.0) - (dimeter / 2.0), dimeter, dimeter);
 		
 		//init is the bar being drag
 		dragging = false;
@@ -47,11 +47,11 @@ public class MusicBar extends JComponent{
 
 	//set the position to the mouse position on the progress bar when press/drag
 	public void updateProgressByDrag(double x){
-		if(x < SPACE_WIDTH){
-			x = SPACE_WIDTH;
+		if(x < 0){
+			x = 0;
 		}
-		else if(x > SPACE_WIDTH + width){
-			x = SPACE_WIDTH + width;
+		else if(x > width){
+			x = width;
 		}
 		progressBall.setFrame(x - (dimeter / 2.0), (height / 2.0) - (dimeter / 2.0), dimeter, dimeter);
 		repaint();
@@ -62,7 +62,7 @@ public class MusicBar extends JComponent{
 		//only run when the bar is not dragging
 		if(!dragging){
 			//find the current position by looking at the percentage complete
-			double curPos = SPACE_WIDTH + ((double)curMS / (double)totalMS * width);
+			double curPos = ((double)curMS / (double)totalMS * width);
 			progressBall.setFrame(curPos - (dimeter / 2.0), (height / 2.0) - (dimeter / 2.0), dimeter, dimeter);
 			repaint();
 		}
@@ -82,14 +82,14 @@ public class MusicBar extends JComponent{
 	public int calMS(int position, int totalMS){
 		double x = position;
 
-		if(x < SPACE_WIDTH){
-			x = SPACE_WIDTH;
+		if(x < 0){
+			x = 0;
 		}
-		else if(x > SPACE_WIDTH + width){
-			x = SPACE_WIDTH + width;
+		else if(x > width){
+			x = width;
 		}
 
-		double ms = ((x - SPACE_WIDTH) / width) * (double)totalMS;
+		double ms = (x / width) * (double)totalMS;
 		return (int)ms;
 	}
 
