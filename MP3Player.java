@@ -84,6 +84,28 @@ public class MP3Player{
 		//MusicBar(width, height, thickness)
 		bar = new MusicBar(barWidth, barHeight, 2);
 
+		//set up drag listener for draging
+		class DragBarListener extends MouseAdapter{
+			public void mousePressed(MouseEvent e){
+				//System.out.println(e.getX());
+				bar.startDrag();
+				bar.updateProgressByDrag((double) e.getX());
+			}
+			public void mouseReleased(MouseEvent e){
+				bar.updateProgressByDrag((double) e.getX());
+				bar.finishDrag();
+				startMusicAtPos(e.getX());
+			}
+			public void mouseDragged(MouseEvent e){
+				bar.updateProgressByDrag((double) e.getX());
+			}
+
+		}
+
+		MouseListener dragBarListener = new DragBarListener();
+		bar.addMouseListener(dragBarListener);
+		bar.addMouseMotionListener((MouseMotionListener)dragBarListener);
+
 		timerDisplay = new JLabel("00:00  ");
 
 
@@ -122,7 +144,7 @@ public class MP3Player{
             	// Double-click detected
     	    	preSongIndex = index;
             	index = list.locationToIndex(evt.getPoint());
-            	System.out.println(index);
+            	System.out.println("selecting index: " + index);
             	startMusic();
         		} 
         		// else if (evt.getClickCount() == 3) {
@@ -305,18 +327,12 @@ public class MP3Player{
 			stopMusic();
 
 			//give now playing mark
-			int nowPlayingIndex = nameList[preSongIndex].lastIndexOf('<') - 1;
-			if(nowPlayingIndex >= 0){
-				nameList[preSongIndex] = nameList[preSongIndex].substring(0, nowPlayingIndex);
-			}
-			nameList[index] = nameList[index] + " <-playing";
-			showList.setListData(nameList);
+			tagPlaced();
 
 			String musicPath = musicFolder.getName() + "/" + playList.get(index);
 
 			//get the duration of the music
 			int duration = (int)getDuration(new File(musicPath));
-
 
 			//play the music
 			player = new MusicPlayer(musicPath, duration);
@@ -344,6 +360,43 @@ public class MP3Player{
 		catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+
+	//start music from certain position
+	//the position as millisecond
+	public static void startMusicAtPos(int startPos){
+
+		try{
+			stopMusic();
+
+			tagPlaced();
+
+			String musicPath = musicFolder.getName() + "/" + playList.get(index);
+
+			//get the duration of the music
+			int duration = (int)getDuration(new File(musicPath));
+			int startMS = bar.calMS(startPos, duration);
+			//System.out.println(startMS + " " + duration);
+
+			player = new MusicPlayer(musicPath, duration, startMS);
+			player.setTimer(timerDisplay);
+			player.setMusicBar(bar);
+			curPlay = new Thread(player);
+			curPlay.start();
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	//place the now playing tag in the list
+	public static void tagPlaced(){
+		int tagStartIndex = nameList[preSongIndex].lastIndexOf('<') - 1;
+		if(tagStartIndex >= 0){
+			nameList[preSongIndex] = nameList[preSongIndex].substring(0, tagStartIndex);
+		}
+		nameList[index] = nameList[index] + " <-playing";
+		showList.setListData(nameList);
 	}
 
 	//getting the duration of the song

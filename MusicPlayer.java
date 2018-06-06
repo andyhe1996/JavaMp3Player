@@ -2,25 +2,22 @@ import java.lang.Runnable;
 import javax.swing.JLabel;
 import java.io.*;
 
-import javazoom.jl.player.*;
-
 
 
 public class MusicPlayer implements Runnable{
 
-	private static Player player;
-	//private static String musicPath;
+	private static CustomPlayer player;
 	private static Object pauseLock;
 	//in milli second
 	private static int duration;
+	private int startMS;
 	private JLabel timer;
 	private boolean pause;
 	private MusicBar panelMusicBar;
 
 	public MusicPlayer(String path, int duration){
-		//musicPath = path;
 		try{
-			player = new Player(new FileInputStream(path));
+			player = new CustomPlayer(new FileInputStream(path));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -28,6 +25,26 @@ public class MusicPlayer implements Runnable{
 		this.duration = duration;
 		pauseLock = new Object();
 		pause = false;
+		startMS = 0;
+	}
+
+	public MusicPlayer(String path, int duration, int startMS){
+		this(path, duration);
+		this.startMS = startMS;
+
+		boolean ret = true;
+		try{
+			float ms_per_frame = player.ms_per_frame();
+			if(ms_per_frame >= 0){
+				int offset = (int)(startMS / ms_per_frame) - 1;
+				System.out.println("offset:" + offset + " ms_per_frame:" + ms_per_frame);
+				System.out.println("curMS:" + player.getPosition() + " startMS:" + startMS);
+				while (offset-- > 0 && ret)
+					ret = player.skipFrame();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	public void run(){
@@ -67,6 +84,7 @@ public class MusicPlayer implements Runnable{
 
 	public void stop(){
 		player.close();
+		startMS = 0;
 		UpdateCurrentTime();
 		synchronized(pauseLock){
 			pauseLock.notify();
@@ -88,7 +106,7 @@ public class MusicPlayer implements Runnable{
 	//int millisecond
 	public void UpdateCurrentTime(){
 		if(timer != null){
-			int millisec = player.getPosition();
+			int millisec = player.getPosition() + startMS;
 			int sec = millisec / 1000;
 			int min = sec / 60;
 			sec = sec % 60;
@@ -106,7 +124,7 @@ public class MusicPlayer implements Runnable{
 		}
 
 		if(panelMusicBar != null){
-			panelMusicBar.updateProgress(player.getPosition(), duration);
+			panelMusicBar.updateProgress(player.getPosition() + startMS, duration);
 		}
 	}
 }
