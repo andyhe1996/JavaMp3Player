@@ -311,7 +311,7 @@ public class MP3Player{
 			curPlay = new Thread(player);
 			curPlay.start();
 
-			// AudioFileFormat af = AudioSystem.getAudioFileFormat(new File(musicPath));
+			AudioFileFormat af = AudioSystem.getAudioFileFormat(new File(musicPath));
 		
 		}
 		catch(Exception e){
