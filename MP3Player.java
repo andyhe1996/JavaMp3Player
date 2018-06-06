@@ -8,8 +8,9 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.util.*;
-import javazoom.spi.mpeg.sampled.file.*;
+//import javazoom.spi.mpeg.sampled.file.*;
 import org.tritonus.share.sampled.file.*;
+import org.tritonus.share.sampled.TAudioFormat;
 //import javazoom.jl.player.*;
 //import javazoom.jl.player.advanced.*;
 
@@ -74,6 +75,7 @@ public class MP3Player{
 
 	}
 
+	//initialize the music progress bar, with timers
 	public static void musicBarInit(){
 
 		double barWidth = lowerTempPanel.getPreferredSize().getWidth() - 50.0;
@@ -82,13 +84,14 @@ public class MP3Player{
 		//MusicBar(width, height, thickness)
 		bar = new MusicBar(barWidth, barHeight, 2);
 
-		timerDisplay = new JLabel("00:00 ");
+		timerDisplay = new JLabel("00:00  ");
 
 
 		lowerTempPanel.add(timerDisplay, BorderLayout.EAST);
 		lowerTempPanel.add(bar, BorderLayout.CENTER);
 	}
 
+	//initialize the music list
 	public static void listInit(){
 		
 		scrollBar = new JScrollPane();
@@ -97,7 +100,6 @@ public class MP3Player{
 		int listWidth = (int)listPanel.getPreferredSize().getWidth() * 9 / 10;
 		int listHeight = (int)listPanel.getPreferredSize().getHeight() * 9 / 10;
 		scrollBar.setPreferredSize(new Dimension(listWidth, listHeight));
-		showList.setPreferredSize(new Dimension(listWidth, listHeight));
 		showList.setFixedCellHeight(listHeight / 20);
 
 		//add listener
@@ -138,6 +140,7 @@ public class MP3Player{
 		listPanel.add(scrollBar);
 	}
 
+	//initialize the panels, the layout of the interface
 	public static void PanelInit(){
 		upperMainPanel = new JPanel();
 		lowerMainPanel = new JPanel();
@@ -170,6 +173,7 @@ public class MP3Player{
 		frame.add(lowerMainPanel, BorderLayout.SOUTH);
 	}
 
+	//initialize the buttons with its listener
 	public static void buttonsInit(){
 
 		playPauseButton = new JButton("play/pause");
@@ -237,6 +241,7 @@ public class MP3Player{
 		buttonsPanel.add(stopButton, BorderLayout.CENTER);
 	}
 
+	//create the basic Jframe and load the music into the program
 	public static void loading(){
 		playList = new ArrayList<String>();
 		index = 0;
@@ -275,6 +280,7 @@ public class MP3Player{
 		
 	}
 
+	//play the next music on the music list
 	public static void playNextMusic(){
 		preSongIndex = index++;
 		if(index >= playList.size()){
@@ -283,6 +289,7 @@ public class MP3Player{
 		startMusic();
 	}
 
+	//play the previous music on the music list
 	public static void playPreMusic(){
 		preSongIndex = index--;
 		if(index < 0){
@@ -291,6 +298,7 @@ public class MP3Player{
 		startMusic();
 	}
 
+	//start the music
 	private static void startMusic(){
 		try{
 			stopMusic();
@@ -304,14 +312,16 @@ public class MP3Player{
 			showList.setListData(nameList);
 
 			String musicPath = musicFolder.getName() + "/" + playList.get(index);
-			//fis = new FileInputStream(musicPath);
-			//playMP3 = new Player(fis);
-			player = new MusicPlayer(musicPath);
+
+			//get the duration of the music
+			int duration = (int)getDuration(new File(musicPath));
+			
+
+			//play the music
+			player = new MusicPlayer(musicPath, duration);
 			player.setTimer(timerDisplay);
 			curPlay = new Thread(player);
 			curPlay.start();
-
-			AudioFileFormat af = AudioSystem.getAudioFileFormat(new File(musicPath));
 		
 		}
 		catch(Exception e){
@@ -319,6 +329,7 @@ public class MP3Player{
 		}
 	}
 
+	//stop the music
 	public static void stopMusic(){
 		try{
 
@@ -331,5 +342,28 @@ public class MP3Player{
 		catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+
+	//getting the duration of the song
+	//return millisecond
+	private static long getDuration(File file) throws UnsupportedAudioFileException, IOException {
+
+		long microseconds = 0;
+
+		AudioFileFormat fileFormat = AudioSystem.getAudioFileFormat(file);
+		if(fileFormat instanceof TAudioFileFormat) {
+			Map<?, ?> properties = ((TAudioFileFormat) fileFormat).properties();
+			String key = "duration";
+			microseconds = (Long) properties.get(key);
+			int mili = (int) (microseconds / 1000);
+			int sec = (mili / 1000) % 60;
+			int min = (mili / 1000) / 60;
+			System.out.println("time = " + min + ":" + sec);
+		} else {
+			throw new UnsupportedAudioFileException();
+		}
+
+		return microseconds / 1000;
+
 	}
 }

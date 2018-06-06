@@ -28,7 +28,11 @@ public class MusicBar extends JComponent{
 		g2.setStroke(new BasicStroke(thickness));
 		Line2D.Double progressLine = new Line2D.Double(10.0, height / 2.0, 10.0 + width, height / 2.0);
 
+		double dimeter = thickness * 4.0;
+		Ellipse2D.Double progressBall = new Ellipse2D.Double(10.0 - (dimeter / 2.0), height / 2.0 - (dimeter / 2.0), dimeter, dimeter);
+
 		g2.draw(progressLine);
+		g2.fill(progressBall);
 
 	}
 }

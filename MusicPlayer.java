@@ -11,20 +11,22 @@ public class MusicPlayer implements Runnable{
 	private static Player player;
 	//private static String musicPath;
 	private static Object pauseLock;
+	//in milli second
+	private static int duration;
 	private JLabel timer;
 	private boolean pause;
 
-	public MusicPlayer(String path){
+	public MusicPlayer(String path, int duration){
 		//musicPath = path;
 		try{
 			player = new Player(new FileInputStream(path));
-			pauseLock = new Object();
-			pause = false;
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
-
+		this.duration = duration;
+		pauseLock = new Object();
+		pause = false;
 	}
 
 	public void run(){
@@ -93,7 +95,7 @@ public class MusicPlayer implements Runnable{
 			if(sec < 10){
 				curTime += "0";
 			}
-			curTime += sec + " ";
+			curTime += sec + "  ";
 			timer.setText(curTime);
 		}
 	}
