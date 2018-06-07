@@ -2,11 +2,10 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.sound.sampled.*;
+import javax.imageio.ImageIO;
 import java.io.*;
 import java.awt.event.*;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Color;
+import java.awt.*;
 import java.util.*;
 //import javazoom.spi.mpeg.sampled.file.*;
 import org.tritonus.share.sampled.file.*;
@@ -40,6 +39,10 @@ public class MP3Player{
 	private static JPanel upperTempPanel;
 	private static JPanel buttonsPanel;
 	private static JPanel musicBarPanel;
+
+	private static Image musicBarBackground;
+	private static Image musicListBackground;
+	private static Image buttonBackground;
 
 	private static JButton playPauseButton;
 	private static JButton playNextButton;
@@ -120,6 +123,9 @@ public class MP3Player{
 
 	//initialize the music list
 	public static void listInit(){
+
+		//selectColor = white
+		Color selectColor = new Color(255, 255, 255);
 		
 		scrollBar = new JScrollPane();
 		showList = new JList<String>(nameList);
@@ -128,6 +134,27 @@ public class MP3Player{
 		int listHeight = (int)listPanel.getPreferredSize().getHeight() * 9 / 10;
 		scrollBar.setPreferredSize(new Dimension(listWidth, listHeight));
 		showList.setFixedCellHeight(listHeight / 20);
+
+		//try to set the color of the selected cell
+		//does not work right now
+		showList.setSelectionForeground(selectColor);
+		//scrollBar.setBackground(listColor);
+
+		//making Jlist transparent
+		class TransparentListCellRenderer extends DefaultListCellRenderer {
+
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+				setForeground(Color.BLACK);
+				setOpaque(isSelected);
+				return this;
+	        }
+    	}
+    	showList.setCellRenderer(new TransparentListCellRenderer());
+        showList.setOpaque(false);
+        scrollBar.setOpaque(false);
+		scrollBar.getViewport().setOpaque(false);
+
 
 		//add listener
 		// class MusicListListener implements ListSelectionListener{
@@ -169,12 +196,21 @@ public class MP3Player{
 
 	//initialize the panels, the layout of the interface
 	public static void PanelInit(){
+		try{
+			musicListBackground = ImageIO.read(new File("Background/Blue_flower_bg_vertical.jpg"));
+			musicBarBackground = ImageIO.read(new File("Background/Blue_flower_bg_horizontal.jpg"));
+			buttonBackground = ImageIO.read(new File("Background/Blue_flower_bg_horizontal_flip.jpg"));
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		
 		upperMainPanel = new JPanel();
-		lowerMainPanel = new JPanel();
-		listPanel = new JPanel();
+		lowerMainPanel = new BackgroundPanel(musicBarBackground);	
+		listPanel = new BackgroundPanel(musicListBackground);
 		upperTempPanel = new JPanel();
-		buttonsPanel = new JPanel();
-		musicBarPanel = new JPanel();
+		buttonsPanel = new BackgroundPanel(buttonBackground);
+		musicBarPanel = new BackgroundPanel(musicBarBackground);
+		
 
 		upperMainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT * 4 / 5));
 		lowerMainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT / 5));

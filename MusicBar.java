@@ -39,7 +39,9 @@ public class MusicBar extends JComponent{
 	public void paintComponent(Graphics g){
 		Graphics2D g2 = (Graphics2D) g;
 		
-		g2.setColor(Color.BLACK);
+		//color = light grey, transparent = 70%, range (0-255)
+		Color progressColor = new Color(50, 50, 50, 255 * 7 / 10);
+		g2.setColor(progressColor);
 		g2.setStroke(new BasicStroke(thickness));
 		g2.draw(progressLine);
 		g2.fill(progressBall);
