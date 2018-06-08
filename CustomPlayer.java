@@ -242,7 +242,7 @@ public class CustomPlayer{
 	public float ms_per_frame() throws JavaLayerException{
 		Header h = bitstream.readFrame();
 		if(h == null)
-			return (float)-1.0;
+			return (float) -1.0;
 		float ms = h.ms_per_frame();
 		bitstream.closeFrame();
 		return ms;

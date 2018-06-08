@@ -156,7 +156,7 @@ public class MP3Player{
 		playLoopButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
 		shuffleButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
 
-		int posx = (int)musicBarPanel.getPreferredSize().getWidth() * 4 / 5;
+		int posx = (int)musicBarPanel.getPreferredSize().getWidth() * 2 / 5;
 		int posy = (int)musicBarPanel.getPreferredSize().getHeight() * 7 / 10;
 
 		replayButton.setBounds(posx, posy, buttonSize, buttonSize);
@@ -164,6 +164,19 @@ public class MP3Player{
 		playLoopButton.setBounds(posx, posy, buttonSize, buttonSize);
 		posx += (int)(buttonSize * 1.5);
 		shuffleButton.setBounds(posx, posy, buttonSize, buttonSize);
+
+		//testing transparent buttons
+		replayButton.setOpaque(false);
+		replayButton.setContentAreaFilled(false);
+		replayButton.setBorderPainted(false);
+
+		playLoopButton.setOpaque(false);
+		playLoopButton.setContentAreaFilled(false);
+		playLoopButton.setBorderPainted(false);
+
+		shuffleButton.setOpaque(false);
+		shuffleButton.setContentAreaFilled(false);
+		shuffleButton.setBorderPainted(false);
 
 		//add listeners
 		//replay after finish
