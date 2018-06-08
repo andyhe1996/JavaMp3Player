@@ -132,11 +132,26 @@ public class MP3Player{
 	}
 
 	public static void barButtonInit(){
-		replayButton = new JButton("replay");
-		playLoopButton = new JButton("loop");
-		shuffleButton = new JButton("shuffle");
 
 		int buttonSize = 25;
+
+		try{
+			Image iconLoad = ImageIO.read(new File("Icon/replay.png"));
+			iconLoad = resizeImage(iconLoad, buttonSize, buttonSize);
+			replayButton = new JButton(new ImageIcon(iconLoad));
+
+			iconLoad = ImageIO.read(new File("Icon/loop.png"));
+			iconLoad = resizeImage(iconLoad, buttonSize, buttonSize);
+			playLoopButton = new JButton(new ImageIcon(iconLoad));
+
+			iconLoad = ImageIO.read(new File("Icon/shuffle.png"));
+			iconLoad = resizeImage(iconLoad, buttonSize, buttonSize);
+			shuffleButton = new JButton(new ImageIcon(iconLoad));
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+
+		
 		replayButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
 		playLoopButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
 		shuffleButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
@@ -185,6 +200,12 @@ public class MP3Player{
 		musicBarPanel.add(replayButton);
 		musicBarPanel.add(playLoopButton);
 		musicBarPanel.add(shuffleButton);
+	}
+
+	//resize Image helper function
+	private static Image resizeImage(Image image, int resizedWidth, int resizedHeight) { 
+    	Image resizedImage = image.getScaledInstance(resizedWidth, resizedHeight,  java.awt.Image.SCALE_SMOOTH);  
+    	return resizedImage;
 	}
 
 	//initialize the music list
@@ -437,11 +458,13 @@ public class MP3Player{
 		while(index == preSongIndex || index == curIndex){
 			index = rand.nextInt(playList.size());
 		}
+		preSongIndex = index;
 		startMusic();
 	}
 
 	//replay the music
 	public static void replayMusic(){
+		preSongIndex = index;
 		startMusic();
 	}
 
