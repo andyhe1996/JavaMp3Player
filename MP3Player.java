@@ -458,7 +458,7 @@ public class MP3Player{
 		while(index == preSongIndex || index == curIndex){
 			index = rand.nextInt(playList.size());
 		}
-		preSongIndex = index;
+		preSongIndex = curIndex;
 		startMusic();
 	}
 
