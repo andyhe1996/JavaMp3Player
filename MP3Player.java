@@ -7,6 +7,7 @@ import java.io.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
+import java.time.Clock;
 //import javazoom.spi.mpeg.sampled.file.*;
 import org.tritonus.share.sampled.file.*;
 import org.tritonus.share.sampled.TAudioFormat;
@@ -15,6 +16,7 @@ import org.tritonus.share.sampled.TAudioFormat;
 
 public class MP3Player{
 
+	//interal helper var
 	private static final int DEFAULT_WIDTH = 800;
 	private static final int DEFAULT_HEIGHT = 600;
 
@@ -30,7 +32,10 @@ public class MP3Player{
 	private static int index;
 	private static int preSongIndex;
 	private static String[] nameList;
+	private static Random rand;
+	private static int loopingStatus;
 
+	//interface var
 	private static JFrame frame;
 	
 	private static JPanel upperMainPanel;
@@ -54,6 +59,9 @@ public class MP3Player{
 
 	private static MusicBar bar;
 	private static JLabel timerDisplay;
+	private static JButton replayButton;
+	private static JButton shuffleButton;
+	private static JButton playLoopButton;
 
 	public static void main(String[] args){
 
@@ -117,8 +125,66 @@ public class MP3Player{
 		bar.addMouseListener(dragBarListener);
 		bar.addMouseMotionListener((MouseMotionListener)dragBarListener);
 
+		barButtonInit();
+
 		musicBarPanel.add(timerDisplay);
 		musicBarPanel.add(bar);
+	}
+
+	public static void barButtonInit(){
+		replayButton = new JButton("replay");
+		playLoopButton = new JButton("loop");
+		shuffleButton = new JButton("shuffle");
+
+		int buttonSize = 25;
+		replayButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
+		playLoopButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
+		shuffleButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
+
+		int posx = (int)musicBarPanel.getPreferredSize().getWidth() * 4 / 5;
+		int posy = (int)musicBarPanel.getPreferredSize().getHeight() * 7 / 10;
+
+		replayButton.setBounds(posx, posy, buttonSize, buttonSize);
+		posx += (int)(buttonSize * 1.5);
+		playLoopButton.setBounds(posx, posy, buttonSize, buttonSize);
+		posx += (int)(buttonSize * 1.5);
+		shuffleButton.setBounds(posx, posy, buttonSize, buttonSize);
+
+		//add listeners
+		//replay after finish
+		class ReplayListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				loopingStatus = MusicPlayer.REPLAY;
+				if(player != null)
+					player.setStatus(MusicPlayer.REPLAY);
+			}
+		}
+		ActionListener replayListener = new ReplayListener();
+		replayButton.addActionListener(replayListener);
+
+		class PlayLoopListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				loopingStatus = MusicPlayer.LOOP;
+				if(player != null)
+					player.setStatus(MusicPlayer.LOOP);
+			}
+		}
+		ActionListener loopListener = new PlayLoopListener();
+		playLoopButton.addActionListener(loopListener);
+
+		class ShuffleListener implements ActionListener{
+			public void actionPerformed(ActionEvent e){
+				loopingStatus = MusicPlayer.RANDOM;
+				if(player != null)
+					player.setStatus(MusicPlayer.RANDOM);
+			}
+		}
+		ActionListener shuffleListener = new ShuffleListener();
+		shuffleButton.addActionListener(shuffleListener);
+
+		musicBarPanel.add(replayButton);
+		musicBarPanel.add(playLoopButton);
+		musicBarPanel.add(shuffleButton);
 	}
 
 	//initialize the music list
@@ -311,6 +377,8 @@ public class MP3Player{
 		index = 0;
 		preSongIndex = 0;
 		isPause = false;
+		rand = new Random();
+		loopingStatus = MusicPlayer.LOOP;
 
 		frame = new JFrame("MyMP3Player");
 		frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -362,6 +430,21 @@ public class MP3Player{
 		startMusic();
 	}
 
+	//play a random music
+	public static void playRandomMusic(){
+		rand.setSeed(Clock.systemUTC().millis());
+		int curIndex = index;
+		while(index == preSongIndex || index == curIndex){
+			index = rand.nextInt(playList.size());
+		}
+		startMusic();
+	}
+
+	//replay the music
+	public static void replayMusic(){
+		startMusic();
+	}
+
 	//start the music
 	private static void startMusic(){
 		try{
@@ -376,7 +459,7 @@ public class MP3Player{
 			int duration = (int)getDuration(new File(musicPath));
 
 			//play the music
-			player = new MusicPlayer(musicPath, duration);
+			player = new MusicPlayer(musicPath, duration, loopingStatus);
 			player.setTimer(timerDisplay);
 			player.setMusicBar(bar);
 			curPlay = new Thread(player);
@@ -421,7 +504,7 @@ public class MP3Player{
 			int startMS = bar.calMS(startPos, duration);
 			//System.out.println(startMS + " " + duration);
 
-			player = new MusicPlayer(musicPath, duration, startMS);
+			player = new MusicPlayer(musicPath, duration, loopingStatus, startMS);
 			player.setTimer(timerDisplay);
 			player.setMusicBar(bar);
 			curPlay = new Thread(player);

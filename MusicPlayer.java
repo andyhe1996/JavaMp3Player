@@ -6,16 +6,21 @@ import java.io.*;
 
 public class MusicPlayer implements Runnable{
 
+	public static final int REPLAY = 0; 
+	public static final int LOOP = 1;
+	public static final int RANDOM = 2;
+
 	private static CustomPlayer player;
 	private static Object pauseLock;
 	//in milli second
 	private static int duration;
 	private int startMS;
+	private int status;
 	private JLabel timer;
 	private boolean pause;
 	private MusicBar panelMusicBar;
 
-	public MusicPlayer(String path, int duration){
+	public MusicPlayer(String path, int duration, int status){
 		try{
 			player = new CustomPlayer(new FileInputStream(path));
 		}
@@ -26,10 +31,11 @@ public class MusicPlayer implements Runnable{
 		pauseLock = new Object();
 		pause = false;
 		startMS = 0;
+		this.status = status;
 	}
 
-	public MusicPlayer(String path, int duration, int startMS){
-		this(path, duration);
+	public MusicPlayer(String path, int duration, int status, int startMS){
+		this(path, duration, status);
 		this.startMS = startMS;
 
 		boolean ret = true;
@@ -62,7 +68,12 @@ public class MusicPlayer implements Runnable{
 			}
 			if(player.isComplete()){
 				System.out.println("song complete");
-				MP3Player.playNextMusic();
+				if(status == RANDOM)
+					MP3Player.playRandomMusic();
+				else if(status == REPLAY)
+					MP3Player.replayMusic();
+				else
+					MP3Player.playNextMusic();
 			}
 		}
 		catch(Exception e){
@@ -101,6 +112,10 @@ public class MusicPlayer implements Runnable{
 
 	public void setMusicBar(MusicBar mB){
 		panelMusicBar = mB;
+	}
+
+	public void setStatus(int status){
+		this.status = status;
 	}
 
 	//int millisecond
