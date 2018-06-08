@@ -140,10 +140,12 @@ public class MP3Player{
 
 		int buttonSize = 25;
 
+		//normal state index: 0, 1, 2
 		Image iconLoad = resizeImage(barButtonIcons[0], buttonSize, buttonSize);
 		replayButton = new JButton(new ImageIcon(iconLoad));
 
-		iconLoad = resizeImage(barButtonIcons[1], buttonSize, buttonSize);
+		//start with loop active: index 4
+		iconLoad = resizeImage(barButtonIcons[4], buttonSize, buttonSize);
 		playLoopButton = new JButton(new ImageIcon(iconLoad));
 
 		iconLoad = resizeImage(barButtonIcons[2], buttonSize, buttonSize);
