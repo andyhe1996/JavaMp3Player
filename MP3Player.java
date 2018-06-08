@@ -62,23 +62,28 @@ public class MP3Player{
 	private static JButton replayButton;
 	private static JButton shuffleButton;
 	private static JButton playLoopButton;
+	private static Image[] barButtonIcons;
 
 	public static void main(String[] args){
 
-		//load initial stuff
-		loading();
+		try{
+			//load initial stuff
+			loading();
 
-		//set up the panels
-		PanelInit();
+			//set up the panels
+			PanelInit();
 
-		//set up the play buttons
-		buttonsInit();
+			//set up the play buttons
+			buttonsInit();
 
-		//set up the music list
-		listInit();
+			//set up the music list
+			listInit();
 
-		//set up the music duration bar
-		musicBarInit();
+			//set up the music duration bar
+			musicBarInit();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
@@ -135,21 +140,14 @@ public class MP3Player{
 
 		int buttonSize = 25;
 
-		try{
-			Image iconLoad = ImageIO.read(new File("Icon/replay.png"));
-			iconLoad = resizeImage(iconLoad, buttonSize, buttonSize);
-			replayButton = new JButton(new ImageIcon(iconLoad));
+		Image iconLoad = resizeImage(barButtonIcons[0], buttonSize, buttonSize);
+		replayButton = new JButton(new ImageIcon(iconLoad));
 
-			iconLoad = ImageIO.read(new File("Icon/loop.png"));
-			iconLoad = resizeImage(iconLoad, buttonSize, buttonSize);
-			playLoopButton = new JButton(new ImageIcon(iconLoad));
+		iconLoad = resizeImage(barButtonIcons[1], buttonSize, buttonSize);
+		playLoopButton = new JButton(new ImageIcon(iconLoad));
 
-			iconLoad = ImageIO.read(new File("Icon/shuffle.png"));
-			iconLoad = resizeImage(iconLoad, buttonSize, buttonSize);
-			shuffleButton = new JButton(new ImageIcon(iconLoad));
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		iconLoad = resizeImage(barButtonIcons[2], buttonSize, buttonSize);
+		shuffleButton = new JButton(new ImageIcon(iconLoad));
 
 		
 		replayButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
@@ -185,6 +183,16 @@ public class MP3Player{
 				loopingStatus = MusicPlayer.REPLAY;
 				if(player != null)
 					player.setStatus(MusicPlayer.REPLAY);
+
+				//replay active: image index 3
+				Image iconLoad = resizeImage(barButtonIcons[3], buttonSize, buttonSize);
+				replayButton.setIcon(new ImageIcon(iconLoad));
+
+				iconLoad = resizeImage(barButtonIcons[1], buttonSize, buttonSize);
+				playLoopButton.setIcon(new ImageIcon(iconLoad));
+
+				iconLoad = resizeImage(barButtonIcons[2], buttonSize, buttonSize);
+				shuffleButton.setIcon(new ImageIcon(iconLoad));
 			}
 		}
 		ActionListener replayListener = new ReplayListener();
@@ -195,6 +203,16 @@ public class MP3Player{
 				loopingStatus = MusicPlayer.LOOP;
 				if(player != null)
 					player.setStatus(MusicPlayer.LOOP);
+
+				Image iconLoad = resizeImage(barButtonIcons[0], buttonSize, buttonSize);
+				replayButton.setIcon(new ImageIcon(iconLoad));
+
+				//loop active: image index 4
+				iconLoad = resizeImage(barButtonIcons[4], buttonSize, buttonSize);
+				playLoopButton.setIcon(new ImageIcon(iconLoad));
+
+				iconLoad = resizeImage(barButtonIcons[2], buttonSize, buttonSize);
+				shuffleButton.setIcon(new ImageIcon(iconLoad));
 			}
 		}
 		ActionListener loopListener = new PlayLoopListener();
@@ -205,6 +223,16 @@ public class MP3Player{
 				loopingStatus = MusicPlayer.RANDOM;
 				if(player != null)
 					player.setStatus(MusicPlayer.RANDOM);
+
+				Image iconLoad = resizeImage(barButtonIcons[0], buttonSize, buttonSize);
+				replayButton.setIcon(new ImageIcon(iconLoad));
+
+				iconLoad = resizeImage(barButtonIcons[1], buttonSize, buttonSize);
+				playLoopButton.setIcon(new ImageIcon(iconLoad));
+
+				//shuffle active: image index 5
+				iconLoad = resizeImage(barButtonIcons[5], buttonSize, buttonSize);
+				shuffleButton.setIcon(new ImageIcon(iconLoad));
 			}
 		}
 		ActionListener shuffleListener = new ShuffleListener();
@@ -406,7 +434,7 @@ public class MP3Player{
 	}
 
 	//create the basic Jframe and load the music into the program
-	public static void loading(){
+	public static void loading() throws IOException{
 		playList = new ArrayList<String>();
 		index = 0;
 		preSongIndex = 0;
@@ -414,9 +442,23 @@ public class MP3Player{
 		rand = new Random();
 		loopingStatus = MusicPlayer.LOOP;
 
+		//create the frame
 		frame = new JFrame("MyMP3Player");
 		frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		frame.setLayout(new BorderLayout());
+
+		//load the image of bar buttons
+		//3 bar buttons and 2 status for each button
+		//index 0,1,2 is normal status
+		//index 3,4,5 is active status
+		int size = 6;
+		barButtonIcons = new Image[size];
+		barButtonIcons[0] = ImageIO.read(new File("Icon/replay.png"));
+		barButtonIcons[1] = ImageIO.read(new File("Icon/loop.png"));
+		barButtonIcons[2] = ImageIO.read(new File("Icon/shuffle.png"));
+		barButtonIcons[3] = ImageIO.read(new File("Icon/replay_active.png"));
+		barButtonIcons[4] = ImageIO.read(new File("Icon/loop_active.png"));
+		barButtonIcons[5] = ImageIO.read(new File("Icon/shuffle_active.png"));
 
 		//create the playlist
 		musicFolder = new File("Music");
