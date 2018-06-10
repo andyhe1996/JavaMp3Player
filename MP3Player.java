@@ -333,7 +333,7 @@ public class MP3Player{
 		
 		listPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 8, DEFAULT_HEIGHT * 4 / 5));
 
-		buttonsPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 2 / 5, DEFAULT_HEIGHT / 5));
+		buttonsPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 8, DEFAULT_HEIGHT / 5));
 		musicBarPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 5, DEFAULT_HEIGHT / 5));
 
 		//temp code for clearify upper panel
