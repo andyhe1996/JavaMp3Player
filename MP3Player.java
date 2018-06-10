@@ -333,6 +333,7 @@ public class MP3Player{
 		
 		listPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 8, DEFAULT_HEIGHT * 4 / 5));
 
+		buttonsPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 2 / 5, DEFAULT_HEIGHT / 5));
 		musicBarPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 5, DEFAULT_HEIGHT / 5));
 
 		//temp code for clearify upper panel
@@ -367,10 +368,19 @@ public class MP3Player{
 		//stop icon: 2
 		stopButton = new JButton(new ImageIcon(buttonIcons[2]));
 		
-		playPauseButton.setPreferredSize(new Dimension(LONG_BUTTON_SIZE, BUTTON_SIZE));
-		playNextButton.setPreferredSize(new Dimension(LONG_BUTTON_SIZE, BUTTON_SIZE));
-		playPreButton.setPreferredSize(new Dimension(LONG_BUTTON_SIZE, BUTTON_SIZE));
-		stopButton.setPreferredSize(new Dimension(LONG_BUTTON_SIZE, BUTTON_SIZE));
+		//set buttons size
+		playPauseButton.setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
+		playNextButton.setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
+		playPreButton.setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
+		stopButton.setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
+
+		//set buttons position
+		int buttonPanelWidth = (int)buttonsPanel.getPreferredSize().getWidth();
+		int buttonPanelHeight = (int)buttonsPanel.getPreferredSize().getHeight();
+		playPauseButton.setBounds((buttonPanelWidth - BUTTON_SIZE) / 2, buttonPanelHeight / 2, BUTTON_SIZE, BUTTON_SIZE);
+		playNextButton.setBounds(buttonPanelWidth / 2 + (BUTTON_SIZE * 2 / 2), buttonPanelHeight / 2, BUTTON_SIZE, BUTTON_SIZE);
+		playPreButton.setBounds(buttonPanelWidth / 2 - (BUTTON_SIZE * 4 / 2), buttonPanelHeight / 2, BUTTON_SIZE, BUTTON_SIZE);
+		stopButton.setBounds((buttonPanelWidth - BUTTON_SIZE) / 2, 0, BUTTON_SIZE, BUTTON_SIZE);
 
 		//set button transparent
 		playPauseButton.setOpaque(false);
@@ -445,11 +455,11 @@ public class MP3Player{
 		StopListener stopListener = new StopListener();
 		stopButton.addActionListener(stopListener);
 
-		buttonsPanel.setLayout(new BorderLayout());
-		buttonsPanel.add(playPreButton, BorderLayout.WEST);
-		buttonsPanel.add(playPauseButton, BorderLayout.SOUTH);
-		buttonsPanel.add(playNextButton, BorderLayout.EAST);
-		buttonsPanel.add(stopButton, BorderLayout.CENTER);
+		buttonsPanel.setLayout(null);
+		buttonsPanel.add(playPreButton);
+		buttonsPanel.add(playPauseButton);
+		buttonsPanel.add(playNextButton);
+		buttonsPanel.add(stopButton);
 	}
 
 	//create the basic Jframe and load the music into the program
