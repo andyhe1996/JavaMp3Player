@@ -19,10 +19,15 @@ public class MusicPlayer implements Runnable{
 	private JLabel timer;
 	private boolean pause;
 	private MusicBar panelMusicBar;
+	private float ms_per_frame;
 
-	public MusicPlayer(String path, int duration, int status){
+	//for the animation
+	private ParticleApp upperPanel;
+
+	public MusicPlayer(String path, int duration, int status, ParticleApp upperPanel){
 		try{
 			player = new CustomPlayer(new FileInputStream(path));
+			ms_per_frame = player.ms_per_frame();
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -32,15 +37,15 @@ public class MusicPlayer implements Runnable{
 		pause = false;
 		startMS = 0;
 		this.status = status;
+		this.upperPanel = upperPanel;
 	}
 
-	public MusicPlayer(String path, int duration, int status, int startMS){
-		this(path, duration, status);
+	public MusicPlayer(String path, int duration, int status, int startMS, ParticleApp upperPanel){
+		this(path, duration, status, upperPanel);
 		this.startMS = startMS;
 
 		boolean ret = true;
 		try{
-			float ms_per_frame = player.ms_per_frame();
 			if(ms_per_frame >= 0){
 				int offset = (int)(startMS / ms_per_frame) - 1;
 				System.out.println("offset:" + offset + " ms_per_frame:" + ms_per_frame);
@@ -55,6 +60,8 @@ public class MusicPlayer implements Runnable{
 
 	public void run(){
 		try{
+			int animationDur = (int)(ms_per_frame * 100.0);
+			upperPanel.setFrame(animationDur);
 			while(player.play(1)){
 				if(pause){
 					synchronized(pauseLock){
@@ -79,15 +86,18 @@ public class MusicPlayer implements Runnable{
 		catch(Exception e){
 			e.printStackTrace();
 		}
+		upperPanel.frameStop();
 		System.out.println("previous session finish");
 	}
 
 	public void pause(){
 		pause = true;
+		upperPanel.framePause();
 	}
 
 	public void resume(){
 		pause = false;
+		upperPanel.frameResume();
 		synchronized(pauseLock){
 			pauseLock.notify();
 		}

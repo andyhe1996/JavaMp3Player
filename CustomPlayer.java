@@ -46,6 +46,8 @@ public class CustomPlayer{
 	private boolean	complete = false;
 
 	private int	lastPosition = 0;
+
+	private short[] frameContent;
 	
 	// /**
 	//  * Creates a new <code>Player</code> instance. 
@@ -184,6 +186,8 @@ public class CustomPlayer{
 				
 			// sample buffer set when decoder constructed
 			SampleBuffer output = (SampleBuffer)decoder.decodeFrame(h, bitstream);
+
+			frameContent = output.getBuffer();
 																																					
 			synchronized (this)
 			{
@@ -218,6 +222,10 @@ public class CustomPlayer{
 		}
 */		
 		return true;
+	}
+
+	public short[] getContent(){
+		return frameContent;
 	}
 
 	public boolean play(int start, int frame) throws JavaLayerException{

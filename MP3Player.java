@@ -13,6 +13,7 @@ import org.tritonus.share.sampled.file.*;
 import org.tritonus.share.sampled.TAudioFormat;
 //import javazoom.jl.player.*;
 //import javazoom.jl.player.advanced.*;
+import javafx.embed.swing.JFXPanel;
 
 public class MP3Player{
 
@@ -46,7 +47,7 @@ public class MP3Player{
 	private static JPanel upperMainPanel;
 	private static JPanel lowerMainPanel;
 	private static JPanel listPanel;
-	private static JPanel upperTempPanel;
+	private static ParticleApp upperPanel;
 	private static JPanel buttonsPanel;
 	private static JPanel musicBarPanel;
 
@@ -323,7 +324,7 @@ public class MP3Player{
 		upperMainPanel = new JPanel();
 		lowerMainPanel = new BackgroundPanel(musicBarBackground);	
 		listPanel = new BackgroundPanel(musicListBackground);
-		upperTempPanel = new JPanel();
+		upperPanel = new ParticleApp(DEFAULT_WIDTH * 5 / 8, DEFAULT_HEIGHT * 4 / 5);
 		buttonsPanel = new BackgroundPanel(buttonBackground);
 		musicBarPanel = new BackgroundPanel(musicBarBackground);
 		
@@ -337,10 +338,10 @@ public class MP3Player{
 		musicBarPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH * 3 / 5, DEFAULT_HEIGHT / 5));
 
 		//temp code for clearify upper panel
-		upperTempPanel.setBackground(Color.BLACK);
+		//upperTempPanel.setBackground(Color.BLACK);
 		upperMainPanel.setLayout(new BorderLayout());
 		upperMainPanel.add(listPanel, BorderLayout.WEST);
-		upperMainPanel.add(upperTempPanel, BorderLayout.CENTER);
+		upperMainPanel.add(upperPanel, BorderLayout.CENTER);
 
 		//lowerMainPanel stuff
 		musicBarPanel.setBackground(Color.WHITE);
@@ -408,12 +409,14 @@ public class MP3Player{
 				else{
 					if(player.isPause()){
 						player.resume();
+						//upperPanel.frameResume();
 
 						//load pause icon, index = 1
 						playPauseButton.setIcon(new ImageIcon(buttonIcons[1]));
 					}
 					else{
 						player.pause();
+						//upperPanel.framePause();
 						Thread.currentThread().yield();
 						//load play icon, index = 0
 						playPauseButton.setIcon(new ImageIcon(buttonIcons[0]));
@@ -596,8 +599,11 @@ public class MP3Player{
 			//get the duration of the music
 			int duration = (int)getDuration(new File(musicPath));
 
+			//start the particle animation
+			//upperPanel.setFrame();
+
 			//play the music
-			player = new MusicPlayer(musicPath, duration, loopingStatus);
+			player = new MusicPlayer(musicPath, duration, loopingStatus, upperPanel);
 			player.setTimer(timerDisplay);
 			player.setMusicBar(bar);
 			curPlay = new Thread(player);
@@ -645,7 +651,10 @@ public class MP3Player{
 			int startMS = bar.calMS(startPos, duration);
 			//System.out.println(startMS + " " + duration);
 
-			player = new MusicPlayer(musicPath, duration, loopingStatus, startMS);
+			//start the particle animation
+			//upperPanel.setFrame();
+
+			player = new MusicPlayer(musicPath, duration, loopingStatus, startMS, upperPanel);
 			player.setTimer(timerDisplay);
 			player.setMusicBar(bar);
 			curPlay = new Thread(player);
